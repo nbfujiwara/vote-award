@@ -1,0 +1,13 @@
+{
+  "name": "vote-award",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/nbfujiwara/vote-award.git",
+  "author": "yuji.fujiwara <yuji.fujiwara@nijibox.co.jp>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": ["app_admin","app_normal"],
+  "scripts": {
+    "deploy": "cd app_admin && yarn generate:prod && cd ../app_normal && yarn generate:prod && cd ../ && firebase deploy"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "nbx-vote-award"
+  },
+  "targets": {
+    "nbx-vote-award": {
+      "hosting": {
+        "admin": [
+          "nbx-vote-award-admin"
+        ],
+        "normal": [
+          "nbx-vote-award"
+        ]
+      }
+    }
+  }
+}
