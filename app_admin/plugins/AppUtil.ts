@@ -25,15 +25,12 @@ export default class AppUtil {
       (authResult: any) => {
         generalStateModule.setIsAuthorized(true)
         AppUtil.FBMng.getLogonData()
-          .then((voteData) => {
-            if (voteData) {
-              if (voteData.user) {
-                basicStateModule.setUser(voteData.user)
-              }
-              if (voteData.nominateId) {
-                basicStateModule.setVotedNominateId(voteData.nominateId)
+          .then((logonData) => {
+            if (logonData) {
+              if (logonData.role && logonData.role > 0) {
+                generalStateModule.setHasRole(true)
               } else {
-                basicStateModule.setVotedNominateId(null)
+                generalStateModule.setHasRole(false)
               }
               successCallback()
             }

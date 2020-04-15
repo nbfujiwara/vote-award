@@ -12,12 +12,18 @@ import { IGeneralState } from '~/store/types'
 class General extends VuexModule implements IGeneralState {
   // state
   isAuthorized = false
+  hasRole = false
   toastMessage = ''
   toastNo = 0
 
   @Mutation
   private SET_IS_AUTHORIZED(val: boolean) {
     this.isAuthorized = val
+  }
+
+  @Mutation
+  private SET_HAS_ROLE(val: boolean) {
+    this.hasRole = val
   }
 
   @Mutation
@@ -33,6 +39,11 @@ class General extends VuexModule implements IGeneralState {
   @Action({})
   public setIsAuthorized(val: boolean) {
     this.SET_IS_AUTHORIZED(val)
+  }
+
+  @Action({})
+  public setHasRole(val: boolean) {
+    this.SET_HAS_ROLE(val)
   }
 
   @Action({})

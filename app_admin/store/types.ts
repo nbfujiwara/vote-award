@@ -1,6 +1,6 @@
+import { IPowerVoter } from '../../common/interfaces/IPowerVoter'
 import { INominate } from '~/../common/interfaces/INominate'
 import { IRound } from '~/../common/interfaces/IRound'
-import { IUser } from '~/../common/interfaces/IUser'
 
 export interface IRootState {
   general: IGeneralState
@@ -9,13 +9,13 @@ export interface IRootState {
 
 export interface IGeneralState {
   isAuthorized: boolean
+  hasRole: boolean
   toastMessage: string
   toastNo: number
 }
 
 export interface IBasicState {
-  user: IUser
-  votedNominateId: number | null
   nominates: INominate[]
   round: IRound
+  powerVoters: IPowerVoter[]
 }
