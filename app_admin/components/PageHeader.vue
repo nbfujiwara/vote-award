@@ -13,6 +13,18 @@
           <v-list-item-icon><v-icon>mdi-home</v-icon></v-list-item-icon>
           <v-list-item-title>Home</v-list-item-title>
         </v-list-item>
+        <v-list-item to="/result">
+          <v-list-item-icon><v-icon>mdi-vote</v-icon></v-list-item-icon>
+          <v-list-item-title>公開用投票結果</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/result_summary">
+          <v-list-item-icon><v-icon>mdi-vote-outline</v-icon></v-list-item-icon>
+          <v-list-item-title>投票結果サマリ</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/result_raw">
+          <v-list-item-icon><v-icon>mdi-view-list</v-icon></v-list-item-icon>
+          <v-list-item-title>投票結果ローデータ</v-list-item-title>
+        </v-list-item>
         <v-list-item to="/setting">
           <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
           <v-list-item-title>設定</v-list-item-title>
@@ -42,10 +54,10 @@ export default class PageHeader extends Vue {
     type: String,
     required: true
   })
-  public titleText: string = ''
+  public titleText: string | undefined
 
   private clipped: boolean = false
-  private drawer: boolean = false
+  private drawer: boolean = true
   private miniVariant: boolean = false
 
   protected logout() {

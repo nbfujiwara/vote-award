@@ -3,10 +3,13 @@ import * as firebaseui from 'firebaseui'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/storage'
+import { IVote } from '../../common/interfaces/IVote'
+import { IPowerVoter } from '../../common/interfaces/IPowerVoter'
 import BaseFirebaseManager from '~/../common/plugins/BaseFirebaseManager'
 import { IAdminLogonData } from '~/../common/interfaces/IAdminLogonData'
 import { IAdminUser } from '~/../common/interfaces/IAdminUser'
 import { INominate } from '~/../common/interfaces/INominate'
+import { IRound } from '~/../common/interfaces/IRound'
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot
 import DocumentData = firebase.firestore.DocumentData
 
@@ -114,15 +117,52 @@ export default class FirebaseManager extends BaseFirebaseManager {
       })
   }
 
-  public saveEntrySheet(sheet: number[]) {
-    const authUser = this.getCurrentUser()
-    if (!authUser) {
-      throw new Error('auth user is null')
-    }
+  public getRound(roundId: string) {
     return this.db
-      .collection('entries')
-      .doc(authUser.uid)
-      .set({ sheet }, { merge: true })
+      .collection('rounds')
+      .doc(roundId)
+      .get()
+      .then((doc: DocumentSnapshot<DocumentData>): IRound | null => {
+        if (doc.exists) {
+          return this.commonParseDoc(doc.data())
+        }
+        return null
+      })
+  }
+
+  public saveRound(roundId: string, round: IRound) {
+    return this.db
+      .collection('rounds')
+      .doc(roundId)
+      .set(round, { merge: true })
+  }
+
+  public getVotes() {
+    return this.db
+      .collection('votes')
+      .get()
+      .then((querySnapshot) => {
+        const list: IVote[] = []
+        querySnapshot.forEach((doc) => {
+          const row: IVote = this.commonParseDoc(doc.data())
+          list.push(row)
+        })
+        return list
+      })
+  }
+
+  public getPowerVoters() {
+    return this.db
+      .collection('powerVoters')
+      .get()
+      .then((querySnapshot) => {
+        const list: IPowerVoter[] = []
+        querySnapshot.forEach((doc) => {
+          const row: IPowerVoter = this.commonParseDoc(doc.data())
+          list.push(row)
+        })
+        return list
+      })
   }
 
   public watchGameHits(gameId: string, callback: Function) {

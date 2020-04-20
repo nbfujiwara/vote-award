@@ -47,6 +47,7 @@ export default class HomePage extends ABasePage {
   }
 
   mounted() {
+    DataAccess.loadRound()
     DataAccess.loadNominates()
   }
 
