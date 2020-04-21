@@ -1,7 +1,7 @@
 <template>
   <div class="myContainer">
     <div id="firebase-ui-container"></div>
-    <div v-if="isAuthorized && !hasRole">
+    <div v-if="isAuthorized && isSuccessCallback && !hasRole">
       <v-alert class="warning ma-10"
         >認証されたアカウントは権限を持ちません。コンソールから権限付与してください</v-alert
       >
@@ -18,7 +18,7 @@ import { generalStateModule } from '~/store/modules/general'
   layout: 'plane'
 })
 export default class LoginPage extends Vue {
-  showCaption: boolean = false
+  isSuccessCallback: boolean = false
 
   get isAuthorized() {
     return generalStateModule.isAuthorized
@@ -30,17 +30,16 @@ export default class LoginPage extends Vue {
 
   beforeMount() {}
   mounted() {
-    this.showCaption = false
+    this.isSuccessCallback = false
     AppUtil.startAuthUI(
       '#firebase-ui-container',
       () => {
+        this.isSuccessCallback = true
         if (generalStateModule.isAuthorized && generalStateModule.hasRole) {
           this.$router.push({ path: '/home' })
         }
       },
-      () => {
-        this.showCaption = true
-      }
+      () => {}
     )
   }
 }

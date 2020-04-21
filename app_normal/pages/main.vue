@@ -34,8 +34,56 @@
         </v-col>
       </v-row>
     </template>
-
     <v-divider></v-divider>
+
+    <v-card class="ma-10">
+      <v-list dense>
+        <v-subheader>審査基準</v-subheader>
+        <v-list-item-group color="primary">
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-check</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              役割範囲を大きく超えた取り組み
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-check</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              まじめに期待に応え続けることで創出した、社外・社内への好影響
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-check</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              柔軟に変わり続ける動きによる社外・社内への好影響
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-check</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              前例のない取り組みによるイノベーション創出
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-check</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              その他、ニジボックスの一員としての高い事業貢献
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-card>
+
   </div>
 </template>
 

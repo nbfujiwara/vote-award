@@ -19,11 +19,15 @@
         </v-list-item>
         <v-list-item to="/result_summary">
           <v-list-item-icon><v-icon>mdi-vote-outline</v-icon></v-list-item-icon>
-          <v-list-item-title>投票結果サマリ</v-list-item-title>
+          <v-list-item-title>結果サマリ(静的)</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/result_summary_watch">
+          <v-list-item-icon><v-icon>mdi-vote-outline</v-icon></v-list-item-icon>
+          <v-list-item-title>結果サマリ(Watch)</v-list-item-title>
         </v-list-item>
         <v-list-item to="/result_raw">
           <v-list-item-icon><v-icon>mdi-view-list</v-icon></v-list-item-icon>
-          <v-list-item-title>投票結果ローデータ</v-list-item-title>
+          <v-list-item-title>結果ローデータ</v-list-item-title>
         </v-list-item>
         <v-list-item to="/setting">
           <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>

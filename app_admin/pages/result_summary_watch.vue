@@ -2,6 +2,26 @@
   <div class="containerWithHeader">
     <page-header title-text="投票結果ローデータ"></page-header>
 
+    <v-chip
+      v-show="voteChangeCount > 0"
+      class="ma-2"
+      color="primary"
+      @click="loadVotes"
+    >
+      <v-avatar left class="accent">
+        {{ voteChangeCount }}
+      </v-avatar>
+      投票集計差分
+      <v-icon right>mdi-reload</v-icon>
+    </v-chip>
+    <v-chip
+      v-show="voteChangeCount === 0"
+      class="ma-2"
+      color="green"
+      text-color="white"
+    >
+      最新
+    </v-chip>
     <v-row class="ma-10" dense>
       <v-col v-for="(voteSummary, idx) in voteSummaries" :key="idx" cols="6">
         <v-card>
@@ -65,7 +85,7 @@ import DataAccess from '~/plugins/DataAccess'
     PageHeader: () => import('~/components/PageHeader.vue')
   }
 })
-export default class ResultSummaryPage extends ABasePage {
+export default class ResultSummaryWatchPage extends ABasePage {
   beforeMount() {
     this.commonBeforeMount()
   }
@@ -80,12 +100,32 @@ export default class ResultSummaryPage extends ABasePage {
     return basicStateModule.powerVoterDetails
   }
 
+  get voteChangeCount() {
+    return basicStateModule.voteChangeCount
+  }
+
   mounted() {
     DataAccess.loadNominates()
-      .then(DataAccess.loadAllVotes)
       .then(DataAccess.loadPowerVoters)
-      .then(DataAccess.loadVoteSummary)
+      .then(DataAccess.loadInitializeVoteSummary)
+      .then(DataAccess.loadInitializePowerVoterDetails)
+      .then(() => {
+        this.listener = DataAccess.watchVotes()
+      })
+  }
+
+  beforeDestroy() {
+    console.log('before Destroy called')
+    if (this.listener) {
+      this.listener()
+    }
+  }
+
+  loadVotes() {
+    basicStateModule.resetVoteChangeCount()
+    DataAccess.loadAllVotes()
       .then(DataAccess.loadPowerVoterDetails)
+      .then(DataAccess.loadVoteSummary)
   }
 }
 </script>

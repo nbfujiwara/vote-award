@@ -24,4 +24,5 @@ export interface IBasicState {
   powerVoterDetails: IPowerVoterDetail[]
   votes: IVoteDetail[]
   voteSummaries: IVoteSummary[]
+  voteChangeCount: number
 }

@@ -128,4 +128,49 @@ export default class DataAccess {
     }
     return null
   }
+
+  public static loadInitializeVoteSummary() {
+    return new Promise((resolve, reject) => {
+      const voteSummaries: IVoteSummary[] = []
+      for (const [idx, nominate] of basicStateModule.nominates.entries()) {
+        voteSummaries.push({
+          nominate,
+          normalCount: 0,
+          powerCount: 0,
+          normalPoint: 0,
+          powerPoint: 0,
+          totalPoint: 0
+        })
+      }
+      basicStateModule.setVoteSummaries(voteSummaries)
+      resolve()
+    })
+  }
+
+  public static loadInitializePowerVoterDetails() {
+    return new Promise((resolve, reject) => {
+      const list: IPowerVoterDetail[] = []
+      for (const [idx, row] of basicStateModule.powerVoters.entries()) {
+        list.push({
+          base: row
+        })
+      }
+      basicStateModule.setPowerVoterDetails(list)
+      resolve()
+    })
+  }
+
+  /**
+   * votesの変化を検知し適切にstoreを更新する
+   *
+   * 変更検知で差分をビシバシ描画を走らせようと思ったものの
+   * 集計によるサマリの減算の扱いのため、結局変更検知ごとに全件取得しないといけない感じになっちゃったので
+   * カウンターだけの処理にした
+   */
+  public static watchVotes() {
+    basicStateModule.resetVoteChangeCount()
+    return AppUtil.FBMng.watchVotes((changeType: string, vote: IVote) => {
+      basicStateModule.addVoteChangeCount()
+    })
+  }
 }

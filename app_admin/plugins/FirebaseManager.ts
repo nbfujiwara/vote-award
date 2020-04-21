@@ -12,6 +12,7 @@ import { INominate } from '~/../common/interfaces/INominate'
 import { IRound } from '~/../common/interfaces/IRound'
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot
 import DocumentData = firebase.firestore.DocumentData
+import QuerySnapshot = firebase.firestore.QuerySnapshot
 
 /**
  * Firebaseに関係する処理のラッパー
@@ -165,13 +166,16 @@ export default class FirebaseManager extends BaseFirebaseManager {
       })
   }
 
-  public watchGameHits(gameId: string, callback: Function) {
+  public watchVotes(callback: Function) {
     return this.db
-      .collection('games')
-      .doc(gameId)
-      .onSnapshot((doc: DocumentSnapshot<DocumentData>) => {
-        console.info('games変更検知', doc.data())
-        callback(doc.data())
+      .collection('votes')
+      .onSnapshot((querySnapshot: QuerySnapshot<DocumentData>) => {
+        querySnapshot.docChanges().forEach((change) => {
+          console.info('votes変更検知', change.type, change.doc.data())
+          callback(change.type, change.doc.data())
+        })
+        //        console.info('votes変更検知', doc.data())
+        //        callback(doc.data())
       })
   }
 }

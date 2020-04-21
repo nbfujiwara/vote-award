@@ -22,6 +22,7 @@ class Basic extends VuexModule implements IBasicState {
   round: IRound = { isClosed: false, isPublished: false }
   votes: IVoteDetail[] = []
   voteSummaries: IVoteSummary[] = []
+  voteChangeCount: number = 0
 
   @Mutation
   private SET_NOMINATES(val: INominate[]) {
@@ -53,6 +54,16 @@ class Basic extends VuexModule implements IBasicState {
     this.voteSummaries = val
   }
 
+  @Mutation
+  private ADD_VOTE_CHANGE_COUNT() {
+    this.voteChangeCount++
+  }
+
+  @Mutation
+  private RESET_VOTE_CHANGE_COUNT() {
+    this.voteChangeCount = 0
+  }
+
   @Action({})
   public setNominates(val: INominate[]) {
     this.SET_NOMINATES(val)
@@ -81,6 +92,16 @@ class Basic extends VuexModule implements IBasicState {
   @Action({})
   public setVoteSummaries(val: IVoteSummary[]) {
     this.SET_VOTE_SUMMARIES(val)
+  }
+
+  @Action({})
+  public addVoteChangeCount() {
+    this.ADD_VOTE_CHANGE_COUNT()
+  }
+
+  @Action({})
+  public resetVoteChangeCount() {
+    this.RESET_VOTE_CHANGE_COUNT()
   }
 }
 
