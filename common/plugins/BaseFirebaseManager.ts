@@ -1,11 +1,14 @@
 import * as firebase from 'firebase/app'
+import * as firebaseui from 'firebaseui'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/storage'
 import UtilDate from "./UtilDate"
+import {INominate} from "../interfaces/INominate"
 
 export default class BaseFirebaseManager {
   protected db: firebase.firestore.Firestore
+  protected authUI: firebaseui.auth.AuthUI | undefined
 
   public constructor() {
     const apiKey = process.env.ENV_FB_API_KEY
@@ -29,6 +32,41 @@ export default class BaseFirebaseManager {
     }
     this.db = firebase.firestore()
   }
+
+  protected generateAuthUI() {
+    if (this.authUI) {
+      return this.authUI
+    }
+    this.authUI = new firebaseui.auth.AuthUI(firebase.auth())
+    return this.authUI
+  }
+
+  public startUI(
+    element: string,
+    successCallback: Function,
+    uiShownCallback: Function | null = null
+  ) {
+    const uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult(authResult: any, redirectUrl: any) {
+          if (authResult.user) {
+            successCallback(authResult)
+          } else {
+            console.error('authResult user is empty', authResult)
+          }
+          return false
+        },
+        uiShown() {
+          if (uiShownCallback) {
+            uiShownCallback()
+          }
+        }
+      },
+      signInSuccessUrl: '/',
+      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+    }
+    return this.generateAuthUI().start(element, uiConfig)
+  }
   public getCurrentUser() {
     return firebase.auth().currentUser
   }
@@ -39,19 +77,21 @@ export default class BaseFirebaseManager {
   }
 
 
-  public getGame(gameId: string) {
+  public getNominates() {
     return this.db
-      .collection('games')
-      .doc(gameId)
+      .collection('nominates')
+      .orderBy('id')
       .get()
-      .then((doc: any) => {
-        if (doc.exists) {
-          return this.commonParseDoc(doc.data())
-        } else {
-          return null
-        }
+      .then((querySnapshot) => {
+        const list: INominate[] = []
+        querySnapshot.forEach((doc) => {
+          const row: INominate = this.commonParseDoc(doc.data())
+          list.push(row)
+        })
+        return list
       })
   }
+
   /**
    * firebaseの型をJS用に変換する共通関数
    * @param obj

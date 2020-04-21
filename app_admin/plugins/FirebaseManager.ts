@@ -18,43 +18,6 @@ import QuerySnapshot = firebase.firestore.QuerySnapshot
  * Firebaseに関係する処理のラッパー
  */
 export default class FirebaseManager extends BaseFirebaseManager {
-  private authUI: firebaseui.auth.AuthUI | undefined
-
-  public startUI(
-    element: string,
-    successCallback: Function,
-    uiShownCallback: Function | null = null
-  ) {
-    const uiConfig = {
-      callbacks: {
-        signInSuccessWithAuthResult(authResult: any, redirectUrl: any) {
-          if (authResult.user) {
-            successCallback(authResult)
-          } else {
-            console.error('authResult user is empty', authResult)
-          }
-          return false
-        },
-        uiShown() {
-          if (uiShownCallback) {
-            uiShownCallback()
-          }
-        }
-      },
-      signInSuccessUrl: '/',
-      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
-    }
-    return this.generateAuthUI().start(element, uiConfig)
-  }
-
-  private generateAuthUI() {
-    if (this.authUI) {
-      return this.authUI
-    }
-    this.authUI = new firebaseui.auth.AuthUI(firebase.auth())
-    return this.authUI
-  }
-
   public getLogonData() {
     const authUser = this.getCurrentUser()
     if (!authUser) {
@@ -102,20 +65,6 @@ export default class FirebaseManager extends BaseFirebaseManager {
           return { adminUser: logonUser, role }
         }
       )
-  }
-
-  public getNominates() {
-    return this.db
-      .collection('nominates')
-      .get()
-      .then((querySnapshot) => {
-        const list: INominate[] = []
-        querySnapshot.forEach((doc) => {
-          const row: INominate = this.commonParseDoc(doc.data())
-          list.push(row)
-        })
-        return list
-      })
   }
 
   public getRound(roundId: string) {
