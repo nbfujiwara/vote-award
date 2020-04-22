@@ -52,4 +52,14 @@ export default class FirebaseManager extends BaseFirebaseManager {
       .doc(authUser.uid)
       .set(vote)
   }
+
+  public watchRound(roundId: string, callback: Function) {
+    return this.db
+      .collection('rounds')
+      .doc(roundId)
+      .onSnapshot((doc) => {
+        console.info('round変更検知', doc.data())
+        callback(doc.data())
+      })
+  }
 }

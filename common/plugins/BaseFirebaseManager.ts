@@ -46,6 +46,7 @@ export default class BaseFirebaseManager {
     successCallback: Function,
     uiShownCallback: Function | null = null
   ) {
+    firebase.auth().languageCode = 'ja'
     const uiConfig = {
       callbacks: {
         signInSuccessWithAuthResult(authResult: any, redirectUrl: any) {
@@ -63,7 +64,13 @@ export default class BaseFirebaseManager {
         }
       },
       signInSuccessUrl: '/',
-      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+      signInOptions: [
+        {
+          provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          customParameters: {
+            hd: process.env.ENV_GOOGLE_AUTH_HD
+          }
+        }]
     }
     return this.generateAuthUI().start(element, uiConfig)
   }

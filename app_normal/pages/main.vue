@@ -83,7 +83,6 @@
         </v-list-item-group>
       </v-list>
     </v-card>
-
   </div>
 </template>
 
@@ -94,6 +93,7 @@ import { basicStateModule } from '~/store/modules/basic'
 import AppUtil from '~/plugins/AppUtil'
 import ABasePage from '~/plugins/ABasePage'
 import DataAccess from '~/plugins/DataAccess'
+import { generalStateModule } from '~/store/modules/general'
 
 @Component({})
 export default class MainPage extends ABasePage {
@@ -110,11 +110,11 @@ export default class MainPage extends ABasePage {
   }
 
   get isClosed(): boolean {
-    return false
+    return basicStateModule.round.isClosed
   }
 
   get isPublished(): boolean {
-    return true
+    return basicStateModule.round.isPublished
   }
 
   colorName(id: number): string {
@@ -126,10 +126,15 @@ export default class MainPage extends ABasePage {
 
   mounted() {
     DataAccess.loadNominates()
+    DataAccess.watchRoundChanges()
   }
 
   executeVote(nominateId: number) {
-    DataAccess.vote(nominateId)
+    if (this.isPublished && !this.isClosed) {
+      DataAccess.vote(nominateId)
+    } else {
+      generalStateModule.setToastMessage('受付期間外です')
+    }
   }
 
   protected logout() {
