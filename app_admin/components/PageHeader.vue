@@ -33,6 +33,10 @@
           <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
           <v-list-item-title>設定</v-list-item-title>
         </v-list-item>
+        <v-list-item to="/setting_power_voters">
+          <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
+          <v-list-item-title>Power投票者設定</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="logout">
           <v-list-item-icon><v-icon>mdi-logout</v-icon></v-list-item-icon>
           <v-list-item-title>ログアウト</v-list-item-title>

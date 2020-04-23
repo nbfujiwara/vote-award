@@ -104,15 +104,35 @@ export default class FirebaseManager extends BaseFirebaseManager {
   public getPowerVoters() {
     return this.db
       .collection('powerVoters')
+      .orderBy('mail')
       .get()
       .then((querySnapshot) => {
         const list: IPowerVoter[] = []
         querySnapshot.forEach((doc) => {
           const row: IPowerVoter = this.commonParseDoc(doc.data())
+          row.docId = doc.id
           list.push(row)
         })
         return list
       })
+  }
+
+  public saveAddPowerVoter(data: IPowerVoter) {
+    return this.db.collection('powerVoters').add(data)
+  }
+
+  public saveModifyPowerVoter(docId: string, data: IPowerVoter) {
+    return this.db
+      .collection('powerVoters')
+      .doc(docId)
+      .set(data)
+  }
+
+  public deletePowerVoter(docId: string) {
+    return this.db
+      .collection('powerVoters')
+      .doc(docId)
+      .delete()
   }
 
   public watchVotes(callback: Function) {

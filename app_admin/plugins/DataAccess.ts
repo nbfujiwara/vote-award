@@ -173,4 +173,30 @@ export default class DataAccess {
       basicStateModule.addVoteChangeCount()
     })
   }
+
+  public static addPowerVoter(data: IPowerVoter) {
+    return AppUtil.FBMng.saveAddPowerVoter(data)
+      .then(DataAccess.loadPowerVoters)
+      .then(() => {
+        generalStateModule.setToastMessage(
+          data.mail + 'をPower投票者として追加しました'
+        )
+      })
+  }
+
+  public static modifyPowerVoter(docId: string, data: IPowerVoter) {
+    return AppUtil.FBMng.saveModifyPowerVoter(docId, data)
+      .then(DataAccess.loadPowerVoters)
+      .then(() => {
+        generalStateModule.setToastMessage('更新しました')
+      })
+  }
+
+  public static deletePowerVoter(docId: string) {
+    return AppUtil.FBMng.deletePowerVoter(docId)
+      .then(DataAccess.loadPowerVoters)
+      .then(() => {
+        generalStateModule.setToastMessage('削除しました')
+      })
+  }
 }
