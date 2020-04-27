@@ -17,6 +17,10 @@
           <v-list-item-icon><v-icon>mdi-vote</v-icon></v-list-item-icon>
           <v-list-item-title>公開用投票結果</v-list-item-title>
         </v-list-item>
+        <v-list-item to="/result_chart">
+          <v-list-item-icon><v-icon>mdi-chart-bar</v-icon></v-list-item-icon>
+          <v-list-item-title>結果グラフ</v-list-item-title>
+        </v-list-item>
         <v-list-item to="/result_summary">
           <v-list-item-icon><v-icon>mdi-vote-outline</v-icon></v-list-item-icon>
           <v-list-item-title>結果サマリ(静的)</v-list-item-title>

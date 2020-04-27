@@ -26,7 +26,11 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['firebaseui/dist/firebaseui.css', '~/assets/common.scss'],
+  css: [
+    'firebaseui/dist/firebaseui.css',
+    '~/assets/common.scss',
+    'c3/c3.min.css'
+  ],
   /*
    ** Plugins to load before mounting the App
    */
