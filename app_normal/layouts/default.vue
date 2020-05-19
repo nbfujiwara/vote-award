@@ -1,10 +1,15 @@
 <template>
   <v-app light>
     <v-content>
-      <v-container fluid fill-height pa-0 class="rootContainer text-center">
+      <v-container
+        fluid
+        fill-height
+        pa-0
+        class="rootContainer text-center posTop"
+      >
         <div class="bgTop">
           <div class="headerWrap">
-            <img class="logo" src="~static/title.svg" />
+            <img class="logo" src="~static/title.png" />
           </div>
         </div>
         <div class="pageContainer">
@@ -46,11 +51,11 @@ export default class DefaultLayout extends Vue {}
   text-align: left;
   margin: 24px auto 0 auto;
 }
-
 .pageContainer {
   width: 980px;
+  min-height: 100%;
   text-align: left;
-  margin: 80px auto 0 auto;
+  margin: 72px auto 0 auto;
   z-index: 2;
 }
 </style>

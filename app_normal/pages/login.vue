@@ -35,10 +35,6 @@ export default class LoginPage extends Vue {
 
 <style scoped lang="scss">
 .myContainer {
-  margin: 0 auto;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  margin-top: 160px;
 }
 </style>

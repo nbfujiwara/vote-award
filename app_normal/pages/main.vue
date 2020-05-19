@@ -21,7 +21,7 @@
       </div>
 
       <v-row>
-        <v-col v-for="(nominate, idx) in nominates" :key="idx" cols="6">
+        <v-col v-for="(nominate, idx) in nominates" :key="idx" cols="12" sm="6">
           <v-card tile @click="executeVote(nominate.id)">
             <div class="nominateBody">
               <div class="captionBg">ENTRY No.{{ idx + 1 }}</div>
@@ -33,16 +33,16 @@
                   <div class="heartBlock">
                     <img
                       v-if="isSelected(nominate.id)"
-                      src="~static/heart_on.svg"
+                      src="~static/heart_on.png"
                     />
-                    <img v-else src="~static/heart_off.svg" />
+                    <img v-else src="~static/heart_off.png" />
                   </div>
                 </v-col>
               </v-row>
             </div>
             <div class="nominateBottom">
               <div class="leftCol">
-                <img src="~static/arrow.svg" />
+                <img src="~static/arrow.png" />
               </div>
               <div class="rightCol">{{ nominate.winner }}</div>
             </div>
@@ -53,8 +53,8 @@
     </template>
 
     <v-row class="judge">
-      <v-col cols="2" offset="3" align-self="center" class="judgeTitle">審査<br />基準</v-col>
-      <v-col cols="7" class="judgeBody">
+      <v-col cols="2" sm="2" offset-sm="3" align-self="center" class="judgeTitle">審査<br />基準</v-col>
+      <v-col cols="9" sm="7" class="judgeBody">
         <ul>
           <li>役割範囲を大きく超えた取り組み</li>
           <li>まじめに期待に応え続けることで創出した、社外・社内への好影響</li>
@@ -166,7 +166,7 @@ export default class MainPage extends ABasePage {
     opacity: 0.2;
   }
   .bodyRow {
-    height: 130px;
+    min-height: 130px;
     margin-bottom: 0.5em;
   }
   .nameBlock {
