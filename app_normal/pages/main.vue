@@ -1,89 +1,74 @@
 <template>
   <div class="myContainer">
     <div class="text-right mb-5">
-      <v-icon @click="logout">mdi-logout</v-icon>
+      <v-icon color="#fff" @click="logout">mdi-logout</v-icon>
     </div>
 
     <template v-if="!isPublished">
       <v-alert type="info">アワードノミネートは未公開中です</v-alert>
     </template>
     <template v-else>
-      <v-alert v-if="!isClosed && !votedNominateId" type="info"
-        >投票したい候補をタップしてください</v-alert
-      >
-      <v-alert v-if="!isClosed && votedNominateId" type="success"
-        >投票を受け付けました。締め切りまでは変更可能です</v-alert
-      >
-      <v-alert v-if="isClosed" color="blue-grey" dark
-        >投票は締め切りました</v-alert
-      >
+      <div v-if="!isClosed && !votedNominateId" class="statusCaption yet">
+        <v-icon>mdi-information-outline</v-icon>
+        投票したい候補をタップしてください
+      </div>
+      <div v-if="!isClosed && votedNominateId" class="statusCaption done">
+        <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
+        投票を受け付けました。締め切りまでは変更可能です
+      </div>
+      <div v-if="isClosed" class="statusCaption close">
+        投票は締め切りました
+      </div>
 
       <v-row>
         <v-col v-for="(nominate, idx) in nominates" :key="idx" cols="6">
-          <v-card @click="executeVote(nominate.id)">
-            <v-card-title>{{ nominate.name }}</v-card-title>
-            <v-card-subtitle class="text-right">{{
-              nominate.winner
-            }}</v-card-subtitle>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-icon x-large :color="colorName(nominate.id)">mdi-heart</v-icon>
-              <v-spacer></v-spacer>
-            </v-card-actions>
+          <v-card tile @click="executeVote(nominate.id)">
+            <div class="nominateBody">
+              <div class="captionBg">ENTRY No.{{ idx + 1 }}</div>
+              <v-row class="bodyRow">
+                <v-col cols="10" align-self="end">
+                  <div class="nameBlock">{{ nominate.name }}</div>
+                </v-col>
+                <v-col cols="2" align-self="end">
+                  <div class="heartBlock">
+                    <img
+                      v-if="isSelected(nominate.id)"
+                      src="~static/heart_on.svg"
+                    />
+                    <img v-else src="~static/heart_off.svg" />
+                  </div>
+                </v-col>
+              </v-row>
+            </div>
+            <div class="nominateBottom">
+              <div class="leftCol">
+                <img src="~static/arrow.svg" />
+              </div>
+              <div class="rightCol">{{ nominate.winner }}</div>
+            </div>
           </v-card>
         </v-col>
       </v-row>
-    </template>
-    <v-divider></v-divider>
 
-    <v-card class="ma-10">
-      <v-list dense>
-        <v-subheader>審査基準</v-subheader>
-        <v-list-item-group color="primary">
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-check</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              役割範囲を大きく超えた取り組み
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-check</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              まじめに期待に応え続けることで創出した、社外・社内への好影響
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-check</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              柔軟に変わり続ける動きによる社外・社内への好影響
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-check</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              前例のない取り組みによるイノベーション創出
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-check</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              その他、ニジボックスの一員としての高い事業貢献
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
+    </template>
+
+    <v-row class="judge">
+      <v-col cols="2" offset="3" align-self="center" class="judgeTitle">審査<br />基準</v-col>
+      <v-col cols="7" class="judgeBody">
+        <ul>
+          <li>役割範囲を大きく超えた取り組み</li>
+          <li>まじめに期待に応え続けることで創出した、社外・社内への好影響</li>
+          <li>柔軟に変わり続ける動きによる社外・社内への好影響</li>
+          <li>前例のない取り組みによるイノベーション創出</li>
+          <li>その他、ニジボックスの一員としての高い事業貢献</li>
+        </ul>
+      </v-col>
+    </v-row>
+
+
   </div>
+
+
 </template>
 
 <script lang="ts">
@@ -117,6 +102,10 @@ export default class MainPage extends ABasePage {
     return basicStateModule.round.isPublished
   }
 
+  isSelected(id: number): boolean {
+    return basicStateModule.votedNominateId === id
+  }
+
   colorName(id: number): string {
     if (basicStateModule.votedNominateId === id) {
       return 'pink'
@@ -147,10 +136,82 @@ export default class MainPage extends ABasePage {
 
 <style scoped lang="scss">
 .myContainer {
-  margin: 0 auto;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
+
+}
+
+.statusCaption {
+  color: #1b1b1b;
   text-align: center;
+  width: 100%;
+  font-size: 16px;
+  padding: 0.8em 0;
+  &.yet {
+    background-color: #dad859;
+  }
+  &.done {
+    background-color: #59da9e;
+  }
+  &.close {
+    background-color: #cccccc;
+  }
+}
+.nominateBody {
+  .captionBg {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    text-align: right;
+    color: #ccc;
+    font-size: 56px;
+    opacity: 0.2;
+  }
+  .bodyRow {
+    height: 130px;
+    margin-bottom: 0.5em;
+  }
+  .nameBlock {
+    font-size: 20px;
+    display: inline-block;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: left;
+    padding-left: 2em;
+    vertical-align: bottom;
+    font-weight: bold;
+  }
+}
+.nominateBottom {
+  color: #fff;
+  background-color: #1b1b1b;
+
+  font-size: 90%;
+  font-weight: bold;
+  box-sizing: border-box;
+  padding: 1em 0;
+  .leftCol {
+    width: 15%;
+    display: inline-block;
+    text-align: right;
+  }
+  .rightCol {
+    width: 80%;
+    display: inline-block;
+    text-align: right;
+  }
+}
+
+.judge {
+  .judgeTitle{
+    padding: 30px 0;
+    font-size: 24px;
+    line-height: 28px;
+    background-color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    height: 100%;
+  }
+  .judgeBody{
+    font-size: 15px;
+  }
 }
 </style>

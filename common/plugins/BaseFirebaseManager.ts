@@ -106,6 +106,7 @@ export default class BaseFirebaseManager {
    */
   protected commonParseDoc(obj: any) {
     Object.entries(obj).forEach(([key, val]) => {
+      console.log(val)
       if (val instanceof Object) {
         if (val.constructor.name === 'Timestamp') {
           obj[key] = UtilDate.parseFirebase(val)
@@ -113,6 +114,9 @@ export default class BaseFirebaseManager {
           // constructor == timestampでひっかからんときがある
           obj[key] = UtilDate.parseFirebase(val)
         }
+      }else if (typeof (val) == "string" || val instanceof String) {
+        obj[key] = val.replace(/\\n/g,"\n")
+        console.log(obj[key])
       }
     })
     return obj
