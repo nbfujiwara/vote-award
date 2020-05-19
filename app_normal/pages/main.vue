@@ -1,5 +1,5 @@
 <template>
-  <div class="myContainer">
+  <div v-show="isReady" class="myContainer">
     <div class="text-right mb-5">
       <v-icon color="#fff" @click="logout">mdi-logout</v-icon>
     </div>
@@ -49,12 +49,18 @@
           </v-card>
         </v-col>
       </v-row>
-
     </template>
 
-    <v-row class="judge">
-      <v-col cols="2" sm="2" offset-sm="3" align-self="center" class="judgeTitle">審査<br />基準</v-col>
-      <v-col cols="9" sm="7" class="judgeBody">
+    <v-row class="judge" dense>
+      <v-col
+        cols="2"
+        sm="2"
+        offset-sm="3"
+        align-self="center"
+        class="judgeTitle"
+        >審査<br />基準</v-col
+      >
+      <v-col cols="10" sm="7" class="judgeBody">
         <ul>
           <li>役割範囲を大きく超えた取り組み</li>
           <li>まじめに期待に応え続けることで創出した、社外・社内への好影響</li>
@@ -64,11 +70,7 @@
         </ul>
       </v-col>
     </v-row>
-
-
   </div>
-
-
 </template>
 
 <script lang="ts">
@@ -82,6 +84,7 @@ import { generalStateModule } from '~/store/modules/general'
 
 @Component({})
 export default class MainPage extends ABasePage {
+  private isReady: boolean = false
   beforeMount() {
     this.commonBeforeMount()
   }
@@ -115,7 +118,10 @@ export default class MainPage extends ABasePage {
 
   mounted() {
     DataAccess.loadNominates()
-    DataAccess.watchRoundChanges()
+      .then(DataAccess.watchRoundChanges)
+      .then(() => {
+        this.isReady = true
+      })
   }
 
   executeVote(nominateId: number) {
@@ -136,7 +142,6 @@ export default class MainPage extends ABasePage {
 
 <style scoped lang="scss">
 .myContainer {
-
 }
 
 .statusCaption {
@@ -201,7 +206,7 @@ export default class MainPage extends ABasePage {
 }
 
 .judge {
-  .judgeTitle{
+  .judgeTitle {
     padding: 30px 0;
     font-size: 24px;
     line-height: 28px;
@@ -210,7 +215,7 @@ export default class MainPage extends ABasePage {
     text-align: center;
     height: 100%;
   }
-  .judgeBody{
+  .judgeBody {
     font-size: 15px;
   }
 }

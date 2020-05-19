@@ -36,11 +36,6 @@ export default class IndexPage extends Vue {
 </script>
 <style scoped lang="scss">
 .myContainer {
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  margin-top: 260px;
 }
 </style>

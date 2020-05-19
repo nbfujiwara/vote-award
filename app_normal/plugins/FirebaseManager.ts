@@ -4,6 +4,7 @@ import 'firebase/firestore'
 import 'firebase/storage'
 import BaseFirebaseManager from '~/../common/plugins/BaseFirebaseManager'
 import { IVote } from '~/../common/interfaces/IVote'
+import { INormalLogonData } from '~/../common/interfaces/INormalLogonData'
 import { INominate } from '~/../common/interfaces/INominate'
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot
 import DocumentData = firebase.firestore.DocumentData
@@ -12,15 +13,21 @@ import DocumentData = firebase.firestore.DocumentData
  * Firebaseに関係する処理のラッパー
  */
 export default class FirebaseManager extends BaseFirebaseManager {
-  public getLogonData() {
+  public getLogonData(roundId: string) {
     const authUser = this.getCurrentUser()
     if (!authUser) {
       throw new Error('auth user is null')
     }
     const userId = authUser.uid
-    let vote: IVote = {
-      user: { name: '', mail: '' },
-      nominateId: null
+    const logonData: INormalLogonData = {
+      vote: {
+        user: { name: '', mail: '' },
+        nominateId: null
+      },
+      round: {
+        isClosed: false,
+        isPublished: false
+      }
     }
     return this.db
       .collection('votes')
@@ -28,18 +35,33 @@ export default class FirebaseManager extends BaseFirebaseManager {
       .get()
       .then(async (doc: DocumentSnapshot<DocumentData>) => {
         if (doc.exists) {
-          vote = this.commonParseDoc(doc.data())
+          logonData.vote = this.commonParseDoc(doc.data())
         } else {
           if (authUser.email !== null) {
-            vote.user.mail = authUser.email
+            logonData.vote.user.mail = authUser.email
           }
           if (authUser.displayName) {
-            vote.user.name = authUser.displayName
+            logonData.vote.user.name = authUser.displayName
           }
-          await this.saveVote(vote)
+          await this.saveVote(logonData.vote)
         }
-        return vote
       })
+      .then(() => {
+        return this.db
+          .collection('rounds')
+          .doc(roundId)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              logonData.round = this.commonParseDoc(doc.data())
+            }
+          })
+      })
+      .then(
+        (): INormalLogonData => {
+          return logonData
+        }
+      )
   }
 
   public saveVote(vote: IVote) {

@@ -1,6 +1,7 @@
 import FirebaseManager from './FirebaseManager'
 import { basicStateModule } from '~/store/modules/basic'
 import { generalStateModule } from '~/store/modules/general'
+import DataAccess from '~/plugins/DataAccess'
 
 /**
  * アプリ全体でゲーム関係に依存しない処理色々（認証など）
@@ -24,17 +25,18 @@ export default class AppUtil {
       element,
       (authResult: any) => {
         generalStateModule.setIsAuthorized(true)
-        AppUtil.FBMng.getLogonData()
-          .then((voteData) => {
-            if (voteData) {
-              if (voteData.user) {
-                basicStateModule.setUser(voteData.user)
+        AppUtil.FBMng.getLogonData(DataAccess.ROUND_ID)
+          .then((logonData) => {
+            if (logonData) {
+              if (logonData.vote.user) {
+                basicStateModule.setUser(logonData.vote.user)
               }
-              if (voteData.nominateId) {
-                basicStateModule.setVotedNominateId(voteData.nominateId)
+              if (logonData.vote.nominateId) {
+                basicStateModule.setVotedNominateId(logonData.vote.nominateId)
               } else {
                 basicStateModule.setVotedNominateId(null)
               }
+              basicStateModule.setRound(logonData.round)
               successCallback()
             }
           })
