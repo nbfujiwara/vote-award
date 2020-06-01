@@ -111,11 +111,11 @@ import DataAccess from '~/plugins/DataAccess'
 })
 export default class SettingPowerVotersPage extends ABasePage {
   private inputMail: string = ''
-  private inputPoint: number = 20
+  private inputPoint: number = 10
   private isShowModifyDialog: boolean = false
   private inputEditId: string = ''
   private inputEditMail: string = ''
-  private inputEditPoint: number = 20
+  private inputEditPoint: number = 10
 
   beforeMount() {
     this.commonBeforeMount()
