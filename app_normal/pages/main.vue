@@ -49,27 +49,29 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <v-row class="judge" dense>
+        <v-col
+          cols="2"
+          sm="2"
+          offset-sm="3"
+          align-self="center"
+          class="judgeTitle"
+        >審査<br />基準</v-col
+        >
+        <v-col cols="10" sm="7" class="judgeBody">
+          <ul>
+            <li>役割範囲を大きく超えた取り組み</li>
+            <li>まじめに期待に応え続けることで創出した、社外・社内への好影響</li>
+            <li>柔軟に変わり続ける動きによる社外・社内への好影響</li>
+            <li>前例のない取り組みによるイノベーション創出</li>
+            <li>その他、ニジボックスの一員としての高い事業貢献</li>
+          </ul>
+        </v-col>
+      </v-row>
     </template>
 
-    <v-row class="judge" dense>
-      <v-col
-        cols="2"
-        sm="2"
-        offset-sm="3"
-        align-self="center"
-        class="judgeTitle"
-        >審査<br />基準</v-col
-      >
-      <v-col cols="10" sm="7" class="judgeBody">
-        <ul>
-          <li>役割範囲を大きく超えた取り組み</li>
-          <li>まじめに期待に応え続けることで創出した、社外・社内への好影響</li>
-          <li>柔軟に変わり続ける動きによる社外・社内への好影響</li>
-          <li>前例のない取り組みによるイノベーション創出</li>
-          <li>その他、ニジボックスの一員としての高い事業貢献</li>
-        </ul>
-      </v-col>
-    </v-row>
+
   </div>
 </template>
 
