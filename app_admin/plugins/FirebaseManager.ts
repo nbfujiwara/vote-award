@@ -3,11 +3,12 @@ import * as firebaseui from 'firebaseui'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/storage'
-import { IVote } from '../../common/interfaces/IVote'
-import { IPowerVoter } from '../../common/interfaces/IPowerVoter'
 import BaseFirebaseManager from '~/../common/plugins/BaseFirebaseManager'
+import { IVote } from '~/../common/interfaces/IVote'
+import { IPowerVoter } from '~/../common/interfaces/IPowerVoter'
 import { IAdminLogonData } from '~/../common/interfaces/IAdminLogonData'
 import { IAdminUser } from '~/../common/interfaces/IAdminUser'
+import { IAdminUserRole } from '~/../common/interfaces/IAdminUserRole'
 import { INominate } from '~/../common/interfaces/INominate'
 import { IRound } from '~/../common/interfaces/IRound'
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot
@@ -146,5 +147,50 @@ export default class FirebaseManager extends BaseFirebaseManager {
         //        console.info('votes変更検知', doc.data())
         //        callback(doc.data())
       })
+  }
+
+  public getAllAdminUsers() {
+    return this.db
+      .collection('adminUsers')
+      .orderBy('mail')
+      .get()
+      .then((querySnapshot) => {
+        const list: IAdminUser[] = []
+        querySnapshot.forEach((doc) => {
+          const row: IAdminUser = this.commonParseDoc(doc.data())
+          row.userId = doc.id
+          list.push(row)
+        })
+        return list
+      })
+  }
+
+  public getAllAdminUserRoles() {
+    return this.db
+      .collection('adminUserRoles')
+      .get()
+      .then((querySnapshot) => {
+        const list: IAdminUserRole[] = []
+        querySnapshot.forEach((doc) => {
+          const row: IAdminUserRole = this.commonParseDoc(doc.data())
+          row.userId = doc.id
+          list.push(row)
+        })
+        return list
+      })
+  }
+
+  public saveAdminUserRole(userId: string, data: IAdminUserRole) {
+    return this.db
+      .collection('adminUserRoles')
+      .doc(userId)
+      .set(data)
+  }
+
+  public deleteAdminUserRole(userId: string) {
+    return this.db
+      .collection('adminUserRoles')
+      .doc(userId)
+      .delete()
   }
 }

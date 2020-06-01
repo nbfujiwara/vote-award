@@ -1,11 +1,14 @@
-import { IVote } from '../../common/interfaces/IVote'
-import { IVoteDetail } from '../../common/interfaces/IVoteDetail'
-import { IVoteSummary } from '../../common/interfaces/IVoteSummary'
-import { IPowerVoter } from '../../common/interfaces/IPowerVoter'
-import { IPowerVoterDetail } from '../../common/interfaces/IPowerVoterDetail'
 import AppUtil from './AppUtil'
+import { IVote } from '~/../common/interfaces/IVote'
+import { IVoteDetail } from '~/../common/interfaces/IVoteDetail'
+import { IVoteSummary } from '~/../common/interfaces/IVoteSummary'
+import { IPowerVoter } from '~/../common/interfaces/IPowerVoter'
+import { IPowerVoterDetail } from '~/../common/interfaces/IPowerVoterDetail'
+import { IAdminUser } from '~/../common/interfaces/IAdminUser'
+import { IAdminUserRole } from '~/../common/interfaces/IAdminUserRole'
 import { basicStateModule } from '~/store/modules/basic'
 import { generalStateModule } from '~/store/modules/general'
+import { adminUserStateModule } from '~/store/modules/adminUser'
 import { INominate } from '~/../common/interfaces/INominate'
 import { IRound } from '~/../common/interfaces/IRound'
 
@@ -197,6 +200,36 @@ export default class DataAccess {
       .then(DataAccess.loadPowerVoters)
       .then(() => {
         generalStateModule.setToastMessage('削除しました')
+      })
+  }
+
+  public static loadAllAdminUsers() {
+    return AppUtil.FBMng.getAllAdminUsers().then((list: IAdminUser[]) => {
+      adminUserStateModule.setAllAdminUsers(list)
+    })
+  }
+
+  public static loadAllAdminUserRoles() {
+    return AppUtil.FBMng.getAllAdminUserRoles().then(
+      (list: IAdminUserRole[]) => {
+        adminUserStateModule.setAllAdminUserRoles(list)
+      }
+    )
+  }
+
+  public static addAdminUserRole(userId: string) {
+    return AppUtil.FBMng.saveAdminUserRole(userId, { role: 1 })
+      .then(DataAccess.loadAllAdminUserRoles)
+      .then(() => {
+        generalStateModule.setToastMessage('管理者を追加しました')
+      })
+  }
+
+  public static deleteAdminUserRole(userId: string) {
+    return AppUtil.FBMng.deleteAdminUserRole(userId)
+      .then(DataAccess.loadAllAdminUserRoles)
+      .then(() => {
+        generalStateModule.setToastMessage('管理者権限を削除しました')
       })
   }
 }

@@ -3,7 +3,7 @@
     <div id="firebase-ui-container"></div>
     <div v-if="isAuthorized && isSuccessCallback && !hasRole">
       <v-alert class="warning ma-10"
-        >認証されたアカウントは権限を持ちません。コンソールから権限付与してください</v-alert
+        >認証されたアカウントは権限を持ちません。管理者に問い合わせてください<br />※最初の管理者はコンソールから追加する必要あり</v-alert
       >
     </div>
   </div>

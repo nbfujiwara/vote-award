@@ -4,6 +4,8 @@ import { IRound } from '~/../common/interfaces/IRound'
 import { IVoteDetail } from '~/../common/interfaces/IVoteDetail'
 import { IVoteSummary } from '~/../common/interfaces/IVoteSummary'
 import { IPowerVoterDetail } from '~/../common/interfaces/IPowerVoterDetail'
+import { IAdminUser } from '~/../common/interfaces/IAdminUser'
+import { IAdminUserRole } from '~/../common/interfaces/IAdminUserRole'
 
 export interface IRootState {
   general: IGeneralState
@@ -25,4 +27,9 @@ export interface IBasicState {
   votes: IVoteDetail[]
   voteSummaries: IVoteSummary[]
   voteChangeCount: number
+}
+
+export interface IAdminUserState {
+  allAdminUsers: IAdminUser[]
+  allAdminUserRoles: IAdminUserRole[]
 }

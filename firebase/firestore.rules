@@ -7,6 +7,9 @@ service cloud.firestore {
     match /adminUsers/{userID} {
       allow read, write: if request.auth.uid == userID;
     }
+    match /adminUserRoles/{userID} {
+      allow read: if request.auth.uid == userID;
+    }
     match /votes/{userID} {
       allow read, write: if request.auth.uid == userID;
     }

@@ -41,6 +41,10 @@
           <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
           <v-list-item-title>Power投票者設定</v-list-item-title>
         </v-list-item>
+        <v-list-item to="/setting_admin_users">
+          <v-list-item-icon><v-icon>mdi-account-cog</v-icon></v-list-item-icon>
+          <v-list-item-title>管理者設定</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="logout">
           <v-list-item-icon><v-icon>mdi-logout</v-icon></v-list-item-icon>
           <v-list-item-title>ログアウト</v-list-item-title>

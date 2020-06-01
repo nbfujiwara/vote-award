@@ -109,7 +109,7 @@ import DataAccess from '~/plugins/DataAccess'
     PageHeader: () => import('~/components/PageHeader.vue')
   }
 })
-export default class SettingPage extends ABasePage {
+export default class SettingPowerVotersPage extends ABasePage {
   private inputMail: string = ''
   private inputPoint: number = 20
   private isShowModifyDialog: boolean = false
