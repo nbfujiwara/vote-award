@@ -88,8 +88,10 @@ export default class FirebaseManager extends BaseFirebaseManager {
       .set(round, { merge: true })
   }
 
-  public getVotes() {
+  public getVotes(roundId: string) {
     return this.db
+      .collection('roundVotes')
+      .doc(roundId)
       .collection('votes')
       .get()
       .then((querySnapshot) => {
@@ -136,16 +138,16 @@ export default class FirebaseManager extends BaseFirebaseManager {
       .delete()
   }
 
-  public watchVotes(callback: Function) {
+  public watchVotes(roundId: string, callback: Function) {
     return this.db
+      .collection('roundVotes')
+      .doc(roundId)
       .collection('votes')
       .onSnapshot((querySnapshot: QuerySnapshot<DocumentData>) => {
         querySnapshot.docChanges().forEach((change) => {
           console.info('votes変更検知', change.type, change.doc.data())
           callback(change.type, change.doc.data())
         })
-        //        console.info('votes変更検知', doc.data())
-        //        callback(doc.data())
       })
   }
 

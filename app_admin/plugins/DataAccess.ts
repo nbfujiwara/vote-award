@@ -16,12 +16,14 @@ import { IRound } from '~/../common/interfaces/IRound'
  * データの取得や送信
  */
 export default class DataAccess {
-  public static ROUND_ID: string = '1'
+  public static ROUND_ID: string = '102'
 
   public static loadNominates() {
-    return AppUtil.FBMng.getNominates().then((list: INominate[]) => {
-      basicStateModule.setNominates(list)
-    })
+    return AppUtil.FBMng.getNominates(DataAccess.ROUND_ID).then(
+      (list: INominate[]) => {
+        basicStateModule.setNominates(list)
+      }
+    )
   }
 
   public static loadRound() {
@@ -38,18 +40,47 @@ export default class DataAccess {
     })
   }
 
-  public static loadAllVotes() {
-    return AppUtil.FBMng.getVotes().then((rowset: IVote[]) => {
-      const list: IVoteDetail[] = []
-      for (const row of rowset) {
-        const detail: IVoteDetail = {
-          user: row.user,
-          nominate: DataAccess.getNominate(row.nominateId)
+  public static async loadAllVotes() {
+    await DataAccess.loadPowerVoters()
+
+    const powerVoterPointHash: { [k: string]: number } = {}
+    for (const pv of basicStateModule.powerVoters) {
+      powerVoterPointHash[pv.mail] = pv.point
+    }
+
+    return AppUtil.FBMng.getVotes(DataAccess.ROUND_ID).then(
+      (rowset: IVote[]) => {
+        const list: IVoteDetail[] = []
+        for (const row of rowset) {
+          const isPowerVoter: boolean = powerVoterPointHash.hasOwnProperty(
+            row.user.mail
+          )
+          const voteDestList: { nominate: INominate; point: number }[] = []
+          if (isPowerVoter) {
+            for (const nominate of basicStateModule.nominates) {
+              if (row.multiVote.hasOwnProperty(nominate.id)) {
+                voteDestList.push({
+                  nominate,
+                  point: row.multiVote[nominate.id]
+                })
+              }
+            }
+          } else if (row.nominateId) {
+            voteDestList.push({
+              nominate: DataAccess.getNominate(row.nominateId),
+              point: 1
+            })
+          }
+          const detail: IVoteDetail = {
+            user: row.user,
+            isPowerVoter,
+            destList: voteDestList
+          }
+          list.push(detail)
         }
-        list.push(detail)
+        basicStateModule.setVotes(list)
       }
-      basicStateModule.setVotes(list)
-    })
+    )
   }
 
   public static loadPowerVoters() {
@@ -80,16 +111,15 @@ export default class DataAccess {
       }
 
       for (const vote of basicStateModule.votes) {
-        if (vote.nominate) {
-          const idx: number = idIndexMap[vote.nominate.id]
-
-          if (powerVoterPointHash.hasOwnProperty(vote.user.mail)) {
-            const pt = powerVoterPointHash[vote.user.mail]
-            voteSummaries[idx].powerCount++
-            voteSummaries[idx].powerPoint += pt
-            voteSummaries[idx].totalPoint += pt
+        for (const voteDest of vote.destList) {
+          if (!idIndexMap.hasOwnProperty(voteDest.nominate.id)) {
+            continue
+          }
+          const idx: number = idIndexMap[voteDest.nominate.id]
+          if (vote.isPowerVoter) {
+            voteSummaries[idx].powerPoint += voteDest.point
+            voteSummaries[idx].totalPoint += voteDest.point
           } else {
-            voteSummaries[idx].normalCount++
             voteSummaries[idx].normalPoint++
             voteSummaries[idx].totalPoint++
           }
@@ -112,7 +142,7 @@ export default class DataAccess {
       }
 
       for (const vote of basicStateModule.votes) {
-        if (vote.nominate && mailIndexMap.hasOwnProperty(vote.user.mail)) {
+        if (vote.isPowerVoter && mailIndexMap.hasOwnProperty(vote.user.mail)) {
           const idx: number = mailIndexMap[vote.user.mail]
           list[idx].vote = vote
         }
@@ -123,13 +153,13 @@ export default class DataAccess {
     })
   }
 
-  private static getNominate(id: number | null): INominate | null {
+  private static getNominate(id: number): INominate {
     for (const obj of basicStateModule.nominates) {
       if (obj.id === id) {
         return obj
       }
     }
-    return null
+    return { id: 0, name: '', winner: '' }
   }
 
   public static loadInitializeVoteSummary() {
@@ -172,9 +202,12 @@ export default class DataAccess {
    */
   public static watchVotes() {
     basicStateModule.resetVoteChangeCount()
-    return AppUtil.FBMng.watchVotes((changeType: string, vote: IVote) => {
-      basicStateModule.addVoteChangeCount()
-    })
+    return AppUtil.FBMng.watchVotes(
+      DataAccess.ROUND_ID,
+      (changeType: string, vote: IVote) => {
+        basicStateModule.addVoteChangeCount()
+      }
+    )
   }
 
   public static addPowerVoter(data: IPowerVoter) {

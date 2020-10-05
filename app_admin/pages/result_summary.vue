@@ -36,10 +36,15 @@
                 <td>
                   {{ powerVoter.base.point }}
                 </td>
-                <td>
+                <td class="text-left">
                   <template v-if="powerVoter.vote">
-                    {{ powerVoter.vote.nominate.id }} :
-                    {{ powerVoter.vote.nominate.name }}
+                    <div
+                      v-for="(dest, k) in powerVoter.vote.destList"
+                      :key="`${i}_${k}`"
+                    >
+                      {{ dest.point }}pt : {{ dest.nominate.id }}:
+                      {{ dest.nominate.name }}
+                    </div>
                   </template>
                 </td>
               </tr>
@@ -83,7 +88,6 @@ export default class ResultSummaryPage extends ABasePage {
   mounted() {
     DataAccess.loadNominates()
       .then(DataAccess.loadAllVotes)
-      .then(DataAccess.loadPowerVoters)
       .then(DataAccess.loadVoteSummary)
       .then(DataAccess.loadPowerVoterDetails)
   }

@@ -8,22 +8,32 @@
       <v-alert type="info">アワードノミネートは未公開中です</v-alert>
     </template>
     <template v-else>
-      <div v-if="!isClosed && !votedNominateId" class="statusCaption yet">
-        <v-icon>mdi-information-outline</v-icon>
-        投票したい候補をタップしてください
-      </div>
-      <div v-if="!isClosed && votedNominateId" class="statusCaption done">
-        <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
-        投票を受け付けました。締め切りまでは変更可能です
-      </div>
       <div v-if="isClosed" class="statusCaption close">
         投票は締め切りました
       </div>
-
+      <div v-else-if="isPowerVoter && remainPoint" class="statusCaption yet">
+        あなたは複数の投票権があります。残り<span class="remainNum">{{ remainPoint }}</span>ポイント
+      </div>
+      <div v-else-if="(isPowerVoter && !remainPoint) || votedNominateId" class="statusCaption done">
+        <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
+        投票を受け付けました。締め切りまでは変更可能です
+      </div>
+      <div v-else class="statusCaption yet">
+        <v-icon>mdi-information-outline</v-icon>
+        投票したい候補をタップしてください
+      </div>
       <v-row>
         <v-col v-for="(nominate, idx) in nominates" :key="idx" cols="12" sm="6">
-          <v-card tile @click="executeVote(nominate.id)">
-            <div class="nominateBody">
+          <v-card tile>
+            <div v-if="isPowerVoter" class="nominateBody">
+              <div class="captionBg">ENTRY No.{{ idx + 1 }}</div>
+              <v-row class="bodyRow">
+                <v-col cols="10" align-self="end">
+                  <div class="nameBlock">{{ nominate.name }}</div>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else class="nominateBody" @click="executeVote(nominate.id)">
               <div class="captionBg">ENTRY No.{{ idx + 1 }}</div>
               <v-row class="bodyRow">
                 <v-col cols="10" align-self="end">
@@ -39,6 +49,37 @@
                   </div>
                 </v-col>
               </v-row>
+            </div>
+            <div v-if="isPowerVoter" class="text-center">
+              <v-btn
+                small
+                fab
+                dark
+                color="primary"
+                @click="decreaseVote(nominate.id)"
+              >
+                <v-icon dark>
+                  mdi-minus
+                </v-icon>
+              </v-btn>
+              <v-chip class="ma-2" color="pink" text-color="white" large>
+                <v-avatar left>
+                  <v-icon>mdi-heart</v-icon>
+                </v-avatar>
+                {{ getVotedCount(nominate.id) }}
+              </v-chip>
+
+              <v-btn
+                small
+                fab
+                dark
+                color="primary"
+                @click="increaseVote(nominate.id)"
+              >
+                <v-icon dark>
+                  mdi-plus
+                </v-icon>
+              </v-btn>
             </div>
             <div class="nominateBottom">
               <div class="leftCol">
@@ -57,12 +98,14 @@
           offset-sm="3"
           align-self="center"
           class="judgeTitle"
-        >審査<br />基準</v-col
+          >審査<br />基準</v-col
         >
         <v-col cols="10" sm="7" class="judgeBody">
           <ul>
             <li>役割範囲を大きく超えた取り組み</li>
-            <li>まじめに期待に応え続けることで創出した、社外・社内への好影響</li>
+            <li>
+              まじめに期待に応え続けることで創出した、社外・社内への好影響
+            </li>
             <li>柔軟に変わり続ける動きによる社外・社内への好影響</li>
             <li>前例のない取り組みによるイノベーション創出</li>
             <li>その他、ニジボックスの一員としての高い事業貢献</li>
@@ -70,8 +113,6 @@
         </v-col>
       </v-row>
     </template>
-
-
   </div>
 </template>
 
@@ -107,8 +148,35 @@ export default class MainPage extends ABasePage {
     return basicStateModule.round.isPublished
   }
 
+  get isPowerVoter(): boolean {
+    return basicStateModule.isPowerVoter
+  }
+
+  get remainPoint(): number {
+    let remainPoint: number = basicStateModule.votePoint
+    for (const [id, count] of Object.entries(
+      basicStateModule.votedMultiNominateIds
+    )) {
+      remainPoint -= count
+    }
+    return remainPoint
+  }
+
   isSelected(id: number): boolean {
     return basicStateModule.votedNominateId === id
+  }
+
+  getVotedCount(id: number): number {
+    if (basicStateModule.isPowerVoter) {
+      if (basicStateModule.votedMultiNominateIds) {
+        if (basicStateModule.votedMultiNominateIds.hasOwnProperty(id)) {
+          return basicStateModule.votedMultiNominateIds[id]
+        }
+      }
+    } else if (id === basicStateModule.votedNominateId) {
+      return 1
+    }
+    return 0
   }
 
   colorName(id: number): string {
@@ -127,11 +195,34 @@ export default class MainPage extends ABasePage {
   }
 
   executeVote(nominateId: number) {
+    if (this.isPowerVoter) {
+      return false
+    }
     if (this.isPublished && !this.isClosed) {
       DataAccess.vote(nominateId)
     } else {
       generalStateModule.setToastMessage('受付期間外です')
     }
+  }
+
+  get isVoteEnable(): boolean {
+    return this.isPublished && !this.isClosed
+  }
+
+  increaseVote(nominateId: number) {
+    if (!this.isVoteEnable) {
+      generalStateModule.setToastMessage('受付期間外です')
+      return
+    }
+    DataAccess.increaseVote(nominateId)
+  }
+
+  decreaseVote(nominateId: number) {
+    if (!this.isVoteEnable) {
+      generalStateModule.setToastMessage('受付期間外です')
+      return
+    }
+    DataAccess.decreaseVote(nominateId)
   }
 
   protected logout() {
@@ -161,7 +252,13 @@ export default class MainPage extends ABasePage {
   &.close {
     background-color: #cccccc;
   }
+
+  .remainNum {
+    font-size: 150%;
+    font-weight: bold;
+  }
 }
+
 .nominateBody {
   .captionBg {
     position: absolute;

@@ -58,15 +58,22 @@ export default class ResultRawPage extends ABasePage {
   refreshTableItems() {
     this.tableItems.splice(0, this.tableItems.length)
     for (const vote of basicStateModule.votes) {
-      let nominateName: string = ''
-      if (vote.nominate) {
-        nominateName = vote.nominate.id + ':' + vote.nominate.name
+      const destStrArray: string[] = []
+      for (const dest of vote.destList) {
+        destStrArray.push(
+          dest.nominate.id +
+            ':' +
+            dest.nominate.winner +
+            ':' +
+            dest.point +
+            'pt'
+        )
       }
 
       this.tableItems.push({
         name: vote.user.name,
         mail: vote.user.mail,
-        nominate: nominateName
+        nominate: destStrArray.join(' , ')
       })
     }
   }

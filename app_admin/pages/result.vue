@@ -44,7 +44,6 @@ export default class ResultPage extends ABasePage {
   mounted() {
     DataAccess.loadNominates()
       .then(DataAccess.loadAllVotes)
-      .then(DataAccess.loadPowerVoters)
       .then(DataAccess.loadVoteSummary)
       .then(this.showBestInfo)
   }

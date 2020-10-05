@@ -68,10 +68,11 @@ export default class BaseFirebaseManager {
         {
           provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
           customParameters: {
-            hd: process.env.ENV_GOOGLE_AUTH_HD
+//            hd: process.env.ENV_GOOGLE_AUTH_HD
           }
         }]
     }
+    console.log('一時的にHD制約解除中')
     return this.generateAuthUI().start(element, uiConfig)
   }
   public getCurrentUser() {
@@ -84,8 +85,10 @@ export default class BaseFirebaseManager {
   }
 
 
-  public getNominates() {
+  public getNominates(roundId: string) {
     return this.db
+      .collection('rounds')
+      .doc(roundId)
       .collection('nominates')
       .orderBy('id')
       .get()

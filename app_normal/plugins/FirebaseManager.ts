@@ -8,6 +8,7 @@ import { INormalLogonData } from '~/../common/interfaces/INormalLogonData'
 import { INominate } from '~/../common/interfaces/INominate'
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot
 import DocumentData = firebase.firestore.DocumentData
+import { IPowerVoter } from '~/../common/interfaces/IPowerVoter'
 
 /**
  * Firebaseに関係する処理のラッパー
@@ -22,14 +23,19 @@ export default class FirebaseManager extends BaseFirebaseManager {
     const logonData: INormalLogonData = {
       vote: {
         user: { name: '', mail: '' },
-        nominateId: null
+        nominateId: null,
+        multiVote: {}
       },
+      votePoint: 1,
+      isPowerUser: false,
       round: {
         isClosed: false,
         isPublished: false
       }
     }
     return this.db
+      .collection('roundVotes')
+      .doc(roundId)
       .collection('votes')
       .doc(userId)
       .get()
@@ -43,8 +49,23 @@ export default class FirebaseManager extends BaseFirebaseManager {
           if (authUser.displayName) {
             logonData.vote.user.name = authUser.displayName
           }
-          await this.saveVote(logonData.vote)
+          await this.saveVote(roundId, logonData.vote)
         }
+      })
+      .then(() => {
+        return this.db
+          .collection('powerVoters')
+          .where('mail', '==', authUser.email)
+          .get()
+          .then((querySnapshot) => {
+            const list: IPowerVoter[] = []
+            querySnapshot.forEach((doc) => {
+              const row: IPowerVoter = this.commonParseDoc(doc.data())
+              console.log(row)
+              logonData.votePoint = row.point
+              logonData.isPowerUser = true
+            })
+          })
       })
       .then(() => {
         return this.db
@@ -64,12 +85,14 @@ export default class FirebaseManager extends BaseFirebaseManager {
       )
   }
 
-  public saveVote(vote: IVote) {
+  public saveVote(roundId: string, vote: IVote) {
     const authUser = this.getCurrentUser()
     if (!authUser) {
       throw new Error('auth user is null')
     }
     return this.db
+      .collection('roundVotes')
+      .doc(roundId)
       .collection('votes')
       .doc(authUser.uid)
       .set(vote)

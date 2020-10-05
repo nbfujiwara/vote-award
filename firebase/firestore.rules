@@ -19,5 +19,14 @@ service cloud.firestore {
     match /rounds/{roundID} {
       allow read: if request.auth != null;
     }
+    match /rounds/{roundID}/nominates/{nominateID} {
+      allow read: if request.auth != null;
+    }
+    match /powerVoters/{powerVoterID} {
+      allow read: if request.auth != null;
+    }
+    match /roundVotes/{roundID}/votes/{userID} {
+      allow read, write: if request.auth.uid == userID;
+    }
   }
 }

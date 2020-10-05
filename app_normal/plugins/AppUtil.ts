@@ -36,6 +36,11 @@ export default class AppUtil {
               } else {
                 basicStateModule.setVotedNominateId(null)
               }
+              basicStateModule.setVotedMultiNominateIds(
+                logonData.vote.multiVote
+              )
+              basicStateModule.setIsPowerVoter(logonData.isPowerUser)
+              basicStateModule.setVotePoint(logonData.votePoint)
               basicStateModule.setRound(logonData.round)
               successCallback()
             }

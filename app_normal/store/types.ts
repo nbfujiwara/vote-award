@@ -15,7 +15,10 @@ export interface IGeneralState {
 
 export interface IBasicState {
   user: IUser
+  isPowerVoter: boolean
+  votePoint: number
   votedNominateId: number | null
+  votedMultiNominateIds: { [key: string]: number }
   nominates: INominate[]
   round: IRound
 }

@@ -44,7 +44,6 @@ export default class ResultChartPage extends ABasePage {
   mounted() {
     DataAccess.loadNominates()
       .then(DataAccess.loadAllVotes)
-      .then(DataAccess.loadPowerVoters)
       .then(DataAccess.loadVoteSummary)
       .then(DataAccess.loadPowerVoterDetails)
       .then(() => {

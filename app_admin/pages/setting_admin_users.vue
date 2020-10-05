@@ -8,7 +8,7 @@
           <v-list two-line subheader class="text-left">
             <v-list-item
               v-for="(user, i) in waitingAdminUsers"
-              :key="'waiting' + { i }"
+              :key="`waiting_${i}`"
             >
               <v-list-item-content>
                 <v-list-item-title
@@ -30,7 +30,7 @@
           <v-list two-line subheader class="text-left">
             <v-list-item
               v-for="(user, i) in hasRoleAdminUsers"
-              :key="'hasRole' + { i }"
+              :key="`hasRole_${i}`"
             >
               <v-list-item-content>
                 <v-list-item-title

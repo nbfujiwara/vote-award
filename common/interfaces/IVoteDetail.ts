@@ -3,5 +3,6 @@ import {INominate} from "./INominate"
 
 export interface IVoteDetail {
   user: IUser
-  nominate: INominate | null
+  isPowerVoter: boolean
+  destList: { nominate:INominate, point: number }[]
 }
