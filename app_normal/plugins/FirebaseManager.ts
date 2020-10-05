@@ -5,10 +5,9 @@ import 'firebase/storage'
 import BaseFirebaseManager from '~/../common/plugins/BaseFirebaseManager'
 import { IVote } from '~/../common/interfaces/IVote'
 import { INormalLogonData } from '~/../common/interfaces/INormalLogonData'
-import { INominate } from '~/../common/interfaces/INominate'
+import { IPowerVoter } from '~/../common/interfaces/IPowerVoter'
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot
 import DocumentData = firebase.firestore.DocumentData
-import { IPowerVoter } from '~/../common/interfaces/IPowerVoter'
 
 /**
  * Firebaseに関係する処理のラッパー
