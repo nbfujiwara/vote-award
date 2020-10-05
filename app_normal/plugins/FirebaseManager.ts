@@ -61,7 +61,6 @@ export default class FirebaseManager extends BaseFirebaseManager {
             const list: IPowerVoter[] = []
             querySnapshot.forEach((doc) => {
               const row: IPowerVoter = this.commonParseDoc(doc.data())
-              console.log(row)
               logonData.votePoint = row.point
               logonData.isPowerUser = true
             })
