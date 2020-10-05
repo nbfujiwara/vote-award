@@ -101,8 +101,6 @@ export default class DataAccess {
       for (const [idx, nominate] of basicStateModule.nominates.entries()) {
         voteSummaries.push({
           nominate,
-          normalCount: 0,
-          powerCount: 0,
           normalPoint: 0,
           powerPoint: 0,
           totalPoint: 0
@@ -168,8 +166,6 @@ export default class DataAccess {
       for (const [idx, nominate] of basicStateModule.nominates.entries()) {
         voteSummaries.push({
           nominate,
-          normalCount: 0,
-          powerCount: 0,
           normalPoint: 0,
           powerPoint: 0,
           totalPoint: 0
