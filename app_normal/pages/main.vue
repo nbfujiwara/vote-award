@@ -50,35 +50,26 @@
                 </v-col>
               </v-row>
             </div>
-            <div v-if="isPowerVoter" class="text-center">
+            <div v-if="isPowerVoter" class="text-center powerVoteBlock">
               <v-btn
-                small
+                x-small
                 fab
-                dark
-                color="primary"
+                outlined
                 @click="decreaseVote(nominate.id)"
               >
-                <v-icon dark>
-                  mdi-minus
-                </v-icon>
+                <v-icon size="24">mdi-minus</v-icon>
               </v-btn>
-              <v-chip class="ma-2" color="pink" text-color="white" large>
-                <v-avatar left>
-                  <v-icon>mdi-heart</v-icon>
-                </v-avatar>
-                {{ getVotedCount(nominate.id) }}
-              </v-chip>
-
+              <div class="powerCountBadge">
+                <v-icon dense color="white">mdi-heart</v-icon>
+                <span class="white--text">{{ getVotedCount(nominate.id) }}</span>
+              </div>
               <v-btn
-                small
+                x-small
                 fab
-                dark
-                color="primary"
+                outlined
                 @click="increaseVote(nominate.id)"
               >
-                <v-icon dark>
-                  mdi-plus
-                </v-icon>
+                <v-icon size="24">mdi-plus</v-icon>
               </v-btn>
             </div>
             <div class="nominateBottom">
@@ -259,6 +250,21 @@ export default class MainPage extends ABasePage {
   }
 }
 
+.powerVoteBlock {
+  .powerCountBadge {
+    background-color: #e91e63;
+    display: inline-block;
+    width: 54px;
+    height: 54px;
+    line-height: 54px;
+    border-radius: 27px;
+    margin: 0 5px;
+    font-weight: bold;
+  }
+  margin-bottom: 10px;
+  -webkit-user-select: none;
+  user-select: none;
+}
 .nominateBody {
   .captionBg {
     position: absolute;
